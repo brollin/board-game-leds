@@ -43,30 +43,34 @@ class Game:
                 player_start += player_width
 
             # show a blinking new color for the next player
-            for i in range(player_start, min(player_start + player_width, self.pixel_config.count)):
+            player_end = min(player_start + player_width, self.pixel_config.count) if len(self.players) < 4 else self.pixel_config.count
+            for i in range(player_start, player_end):
                 self.pixel_config.pixels[i] = self.blink(self.available_colors[self.new_color_index])
 
         elif self.mode == 'start':
+            # TODO fancier start
             if self.frame == 0:
                 # if there are still more players, advance to next player
-                if self.player_turn < len(self.players):
+                if self.player_turn < len(self.players) - 1:
                     self.player_turn += 1
                 # if no more players, go to run mode
                 else:
                     self.mode = 'run'
                     self.player_turn = 0
+                    return
 
             for i in range(0, self.pixel_config.count):
                 self.pixel_config.pixels[i] = self.blink(self.players[self.player_turn])
 
         elif self.mode == 'run':
+            # TODO fancier run. expand color of current player
+            # TODO make sure that blinking, bright colors are not too annoying
             player_start = 0
             player_width = round(self.pixel_config.count / len(self.players))
             for index, player in enumerate(self.players):
                 for i in range(player_start, min(player_start + player_width, self.pixel_config.count)):
                     self.pixel_config.pixels[i] = self.blink(player) if index == self.player_turn else player
                 player_start += player_width
-            # TODO make sure that blinking, bright colors are not too annoying
 
         self.pixel_config.pixels.show()
         self.frame = (self.frame + 1) % self.pixel_config.fps
