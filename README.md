@@ -8,6 +8,6 @@ including whose turn it currently is by blinking that player's color.
 
 ## Hardware
 
-- Raspberry Pi Pico
+- Raspberry Pi Pico (CircuitPython firmware)
 - WS2812B LEDs
 - Button
