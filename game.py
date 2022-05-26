@@ -1,14 +1,15 @@
 from util import lerp3
 
-# TODO more colors
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+ORANGE = (255, 100, 0)
+YELLOW = (255, 255, 0)
+GREEN = (0, 255, 0)
 TEAL = (19, 241, 242)
-# BLUE = (59, 94, 166)
+BLUE = (0, 0, 255)
 PURPLE = (115, 21, 114)
-# MAGENTA = (192, 0, 80)
-RED = (255, 38, 54)
-YELLOW = (255, 170, 26)
-COLORS = [TEAL, PURPLE, RED, YELLOW]
+WHITE = (255, 255, 255)
+COLORS = [RED, ORANGE, YELLOW, GREEN, TEAL, BLUE, PURPLE, WHITE]
 
 class Game:
     mode = 'setup'
@@ -65,6 +66,10 @@ class Game:
             self.players.append(self.available_colors[self.new_color_index])
             self.available_colors.pop(self.new_color_index)
             self.new_color_index = 0
+
+            # start the game if we have run out of available colors
+            if len(self.available_colors) == 0:
+                self.mode = 'start'
 
     def on_very_long_press(self):
         if self.mode == 'setup':
