@@ -13,6 +13,6 @@ class PixelConfig:
             board.GP0,
             self.count,
             auto_write=False,
-            brightness=0.3,
+            brightness=0.1,
             pixel_order=neopixel.GRB
         )

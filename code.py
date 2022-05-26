@@ -12,10 +12,11 @@ game = Game(pixel_config)
 
 button_down_frames = 0
 while True:
-    if button_down_frames != 0 and button_down_frames % 10 == 0:
-        print(button.value + ', ' + button_down_frames)
     if button.value:
         button_down_frames += 1
+        # debugging output
+        if button_down_frames % 5 == 0:
+            print(button_down_frames)
         if button_down_frames > 90:
             game.on_very_long_press()
             # TODO fix overflow button down frames
