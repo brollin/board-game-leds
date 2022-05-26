@@ -1,5 +1,6 @@
 from util import lerp3
 
+# TODO more colors
 BLACK = (0, 0, 0)
 TEAL = (19, 241, 242)
 # BLUE = (59, 94, 166)
@@ -45,10 +46,11 @@ class Game:
 
         elif self.mode == 'start':
             # TODO
-            # TODO when finished transitions to run mode
+            # TODO when finished transition to run mode
             pass
         elif self.mode == 'run':
             # TODO
+            # TODO make sure that blinking colors are not too annoying
             pass
 
         self.pixel_config.pixels.show()
