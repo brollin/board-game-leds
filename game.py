@@ -17,6 +17,7 @@ class Game:
     players = []
     available_colors = COLORS
     new_color_index = 0
+    player_turn = -1
 
     def __init__(self, pixel_config) -> None:
         self.pixel_config = pixel_config
@@ -46,13 +47,26 @@ class Game:
                 self.pixel_config.pixels[i] = self.blink(self.available_colors[self.new_color_index])
 
         elif self.mode == 'start':
-            # TODO
-            # TODO when finished transition to run mode
-            pass
+            if self.frame == 0:
+                # if there are still more players, advance to next player
+                if self.player_turn < len(self.players):
+                    self.player_turn += 1
+                # if no more players, go to run mode
+                else:
+                    self.mode = 'run'
+                    self.player_turn = 0
+
+            for i in range(0, self.pixel_config.count):
+                self.pixel_config.pixels[i] = self.blink(self.players[self.player_turn])
+
         elif self.mode == 'run':
-            # TODO
-            # TODO make sure that blinking colors are not too annoying
-            pass
+            player_start = 0
+            player_width = round(self.pixel_config.count / len(self.players))
+            for index, player in enumerate(self.players):
+                for i in range(player_start, min(player_start + player_width, self.pixel_config.count)):
+                    self.pixel_config.pixels[i] = self.blink(player) if index == self.player_turn else player
+                player_start += player_width
+            # TODO make sure that blinking, bright colors are not too annoying
 
         self.pixel_config.pixels.show()
         self.frame = (self.frame + 1) % self.pixel_config.fps
@@ -60,6 +74,8 @@ class Game:
     def on_short_press(self):
         if self.mode == 'setup':
             self.new_color_index = (self.new_color_index + 1) % len(self.available_colors)
+        elif self.mode == 'run':
+            self.player_turn = (self.player_turn + 1) % len(self.players)
 
     def on_long_press(self):
         if self.mode == 'setup':
