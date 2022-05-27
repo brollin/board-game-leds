@@ -3,7 +3,7 @@ from util import lerp3
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 ORANGE = (255, 100, 0)
-YELLOW = (255, 255, 0)
+YELLOW = (255, 200, 0)
 GREEN = (0, 255, 0)
 TEAL = (19, 241, 242)
 BLUE = (0, 0, 255)
@@ -22,15 +22,17 @@ class Game:
     def __init__(self, pixel_config) -> None:
         self.pixel_config = pixel_config
 
-    def blink(self, color):
+    def blink(self, color, offset=-15):
         """
-        Blink a color from off to on via triangle wave over one second
+        Blink a color from off to on via triangle wave over one second. offset: 0 means it will go
+        from black to full color. A negative number means it will start from a partial color and go
+        to a full color
         """
         if self.frame <= self.pixel_config.fps / 2:
             x = self.frame
         else:
             x = self.pixel_config.fps - self.frame
-        return lerp3(x, 0, self.pixel_config.fps / 2, BLACK, color)
+        return lerp3(x, offset, self.pixel_config.fps / 2, BLACK, color)
 
     def display(self):
         if self.mode == 'setup':
@@ -77,12 +79,16 @@ class Game:
 
     def on_short_press(self):
         if self.mode == 'setup':
+            # setup mode short press advances color
             self.new_color_index = (self.new_color_index + 1) % len(self.available_colors)
         elif self.mode == 'run':
+            # run mode short press advances the turn to the next player
             self.player_turn = (self.player_turn + 1) % len(self.players)
+        self.frame = 0
 
     def on_long_press(self):
         if self.mode == 'setup':
+            # setup mode long press selects color
             self.players.append(self.available_colors[self.new_color_index])
             self.available_colors.pop(self.new_color_index)
             self.new_color_index = 0
@@ -90,7 +96,14 @@ class Game:
             # start the game if we have run out of available colors
             if len(self.available_colors) == 0:
                 self.mode = 'start'
+                self.frame = 0
+
+        elif self.mode == 'run':
+            # run mode long press goes to previous player's turn
+            self.player_turn = (self.player_turn - 1) % len(self.players)
 
     def on_very_long_press(self):
         if self.mode == 'setup':
+            # setup mode very long press exits setup mode
             self.mode = 'start'
+            self.frame = 0

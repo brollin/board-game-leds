@@ -24,7 +24,7 @@ while True:
             game.on_very_long_press()
             button_down_frames = 0
     else:
-        if button_down_frames > 20:
+        if button_down_frames > 10:
             game.on_long_press()
         elif button_down_frames > 0:
             game.on_short_press()
