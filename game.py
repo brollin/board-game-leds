@@ -22,10 +22,10 @@ class Game:
     def __init__(self, pixel_config) -> None:
         self.pixel_config = pixel_config
 
-        # temp
-        self.mode = 'run'
-        self.players = [TEAL, PURPLE, ORANGE, WHITE]
-        self.player_turn = 0
+        # uncomment to start in run mode
+        # self.mode = 'run'
+        # self.players = [TEAL, PURPLE, ORANGE, WHITE]
+        # self.player_turn = 0
 
     def blink(self, color, offset=-15):
         """
