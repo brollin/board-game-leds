@@ -1,4 +1,4 @@
-from util import lerp3
+from util import dim, lerp3
 
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -21,6 +21,11 @@ class Game:
 
     def __init__(self, pixel_config) -> None:
         self.pixel_config = pixel_config
+
+        # temp
+        self.mode = 'run'
+        self.players = [TEAL, PURPLE, ORANGE, WHITE]
+        self.player_turn = 0
 
     def blink(self, color, offset=-15):
         """
@@ -62,7 +67,7 @@ class Game:
                     return
 
             for i in range(0, self.pixel_config.count):
-                self.pixel_config.pixels[i] = self.blink(self.players[self.player_turn])
+                self.pixel_config.pixels[i] = self.blink(self.players[self.player_turn], offset=0)
 
         elif self.mode == 'run':
             # TODO fancier run. expand color of current player
@@ -71,7 +76,10 @@ class Game:
             player_width = round(self.pixel_config.count / len(self.players))
             for index, player in enumerate(self.players):
                 for i in range(player_start, min(player_start + player_width, self.pixel_config.count)):
-                    self.pixel_config.pixels[i] = self.blink(player) if index == self.player_turn else player
+                    if index == self.player_turn:
+                        self.pixel_config.pixels[i] = self.blink(player)
+                    else:
+                        self.pixel_config.pixels[i] = dim(player, 0.5)
                 player_start += player_width
 
         self.pixel_config.pixels.show()

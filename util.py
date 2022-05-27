@@ -36,10 +36,10 @@ def random_sin_cycler(min, max):
         cycle_x, cycle_max = next(cycler)
         yield math.sin(2 * math.pi * cycle_x / cycle_max)
 
-def dim(pixel, amount):
+def dim(pixel, percentage):
     """
-    Dim a pixel
+    Dim a pixel by percentage, using lerp between black and color. percentage: 0 -> black, 1 -> color
     """
-    def dim_color(color):
-        return max(color - amount, 0)
-    return dim_color(pixel[0]), dim_color(pixel[1]), dim_color(pixel[2])
+    def dim_color(color, percentage):
+        return lerp(percentage, 0, 1, 0, color)
+    return dim_color(pixel[0], percentage), dim_color(pixel[1], percentage), dim_color(pixel[2], percentage)
