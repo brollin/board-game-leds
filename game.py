@@ -27,6 +27,10 @@ class Game:
         # self.players = [TEAL, PURPLE, ORANGE, WHITE]
         # self.player_turn = 0
 
+    def set_mode(self, mode):
+        self.mode = mode
+        self.frame = 0
+
     def blink(self, color, offset=-15):
         """
         Blink a color from off to on via triangle wave over one second. offset: 0 means it will go
@@ -62,7 +66,7 @@ class Game:
                     self.player_turn += 1
                 # if no more players, go to run mode
                 else:
-                    self.mode = 'run'
+                    self.set_mode('run')
                     self.player_turn = 0
                     return
 
@@ -71,7 +75,6 @@ class Game:
 
         elif self.mode == 'run':
             # TODO fancier run. expand color of current player
-            # TODO make sure that blinking, bright colors are not too annoying
             player_start = 0
             player_width = round(self.pixel_config.count / len(self.players))
             for index, player in enumerate(self.players):
@@ -82,6 +85,11 @@ class Game:
                         self.pixel_config.pixels[i] = dim(player, 0.5)
                 player_start += player_width
 
+        elif self.mode == 'fanfare':
+            # TODO implement
+            # TODO when done go to setup mode
+            pass
+
         self.pixel_config.pixels.show()
         self.frame = (self.frame + 1) % self.pixel_config.fps
 
@@ -89,10 +97,11 @@ class Game:
         if self.mode == 'setup':
             # setup mode short press advances color
             self.new_color_index = (self.new_color_index + 1) % len(self.available_colors)
+            self.frame = 0
         elif self.mode == 'run':
             # run mode short press advances the turn to the next player
             self.player_turn = (self.player_turn + 1) % len(self.players)
-        self.frame = 0
+            self.frame = 0
 
     def on_long_press(self):
         if self.mode == 'setup':
@@ -103,8 +112,7 @@ class Game:
 
             # start the game if we have run out of available colors
             if len(self.available_colors) == 0:
-                self.mode = 'start'
-                self.frame = 0
+                self.set_mode('start')
 
         elif self.mode == 'run':
             # run mode long press goes to previous player's turn
@@ -113,5 +121,8 @@ class Game:
     def on_very_long_press(self):
         if self.mode == 'setup':
             # setup mode very long press exits setup mode
-            self.mode = 'start'
-            self.frame = 0
+            self.set_mode('start')
+
+        elif self.mode == 'run':
+            # run mode very long press goes to fanfare mode
+            self.set_mode('fanfare')
